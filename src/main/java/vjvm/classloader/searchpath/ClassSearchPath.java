@@ -16,7 +16,12 @@ public abstract class ClassSearchPath implements Closeable {
    */
   public static ClassSearchPath[] constructSearchPath(String path) {
     String sep = System.getProperty("path.separator");
-    throw new UnimplementedError("TODO: parse path and return an array of search paths");
+    return array.stream(path.split(sep)).map(searchPath->{
+      if (searchPath.endWith(".jar")||searchPath.endWith(".JAR"))
+        return new JarSearchPath(searchPath);
+      return new DirSearchPath(searchpath);
+    }).toArray(ClassSearchPath[]::new);
+    // throw new UnimplementedError("TODO: parse path and return an array of search paths");
   }
 
   /**
