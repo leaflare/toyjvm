@@ -5,17 +5,18 @@ import lombok.SneakyThrows;
 
 import java.io.DataInput;
 
-public class IntegerConstant extends Constant {
+public class DoubleConstant extends Constant {
+
     @Getter
-    private final int value;
+    private final double value;
 
     @SneakyThrows
-    IntegerConstant(DataInput input) {
-        value = input.readInt();
+    public DoubleConstant(DataInput input) {
+        this.value = input.readDouble();
     }
 
     @Override
     public String toString() {
-        return String.format("Integer: %d", value);
+        return super.toString();
     }
 }

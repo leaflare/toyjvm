@@ -1,6 +1,5 @@
 package vjvm.runtime.classdata.constant;
 
-import lombok.var;
 import lombok.SneakyThrows;
 import lombok.var;
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,22 +29,37 @@ public abstract class Constant {
         break;
       }
       case CONSTANT_Double:
+        result = new DoubleConstant(input);
+        count = 2;
+        break;
       case CONSTANT_Long:
-        result = new UnknownConstant(input);
+        result = new LongConstant(input);
         count = 2;
         break;
       case CONSTANT_MethodHandle:
         result = new UnknownConstant(input, 3);
         break;
       case CONSTANT_String:
+        result = new StringConstant(input, jClass);
+        break;
       case CONSTANT_Class:
+        result = new ClassInfoConstant(input, jClass);
+        break;
       case CONSTANT_MethodType:
         result = new UnknownConstant(input, 2);
         break;
       case CONSTANT_Float:
+        result = new FloatConstant(input);
+        break;
       case CONSTANT_Fieldref:
+        result = new FieldRefConstant(input, jClass);
+        break;
       case CONSTANT_Methodref:
+        result = new MethodRefConstant(input, jClass);
+        break;
       case CONSTANT_InterfaceMethodref:
+        result = new InterfaceMethodRefConstant(input, jClass);
+        break;
       case CONSTANT_Dynamic:
       case CONSTANT_InvokeDynamic:
         result = new UnknownConstant(input, 4);
