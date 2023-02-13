@@ -35,7 +35,9 @@ public class JClassLoader implements Closeable {
   public JClass loadClass(String descriptor) {
     // To construct a JClass, use the following constructor
     // return new JClass(new DataInputStream(istream_from_file), this);
+
     // If already acquired, return directly
+    // definedClass is used as a cache
     JClass defined = definedClass.get(descriptor);
     if (defined != null) {
       return defined;
@@ -54,7 +56,7 @@ public class JClassLoader implements Closeable {
       var result = searchPath.findClass(descriptor);
       if (result != null) {
         JClass clazz = new JClass(new DataInputStream(result), this);
-        definedClass.put(descriptor, clazz);  // 缓存结果
+        definedClass.put(descriptor, clazz);  // save results
         return clazz;
       }
     }
