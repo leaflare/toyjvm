@@ -22,28 +22,38 @@ public abstract class ClassSearchPath implements Closeable {
   /**
    * Construct search path objects with a given path.
    */
+// Original solution
+//  public static ClassSearchPath[] constructSearchPath(String path) {
+//    String sep = System.getProperty("path.separator");
+//    return Arrays.stream(path.split(sep)).map(searchPath -> {
+//      if (searchPath.endsWith(".jar") || searchPath.endsWith(".JAR"))
+//        return new JarSearchPath(searchPath);
+//      return new DirSearchPath(searchPath);
+//    }).toArray(ClassSearchPath[]::new);
+//  }
   public static ClassSearchPath[] constructSearchPath(String path) {
     return Arrays.stream(path.split(System.getProperty("path.separator"))).map((s) -> new ClassSearchPath() {
       @Override
       public InputStream findClass(String name) {
         InputStream stream = null;
 
+        // Find in the jar file
         if (s.endsWith(".jar")) {
-          // Find in the jar file
           try {
             JarFile jarFile = new JarFile(s);
             stream = jarFile.getInputStream(new ZipEntry(name.substring(1).replace(";", "") + ".class"));
           } catch (Exception e) {
-//                        e.printStackTrace();
+//                e.printStackTrace();
           }
-        } else {
-          // Find in the directory
+        }
+        // Find in the directory
+        else {
           try {
             String actualPath = s + File.separator + name.substring(1).replace(";", "") + ".class";
             System.err.println("Searching for path: " + actualPath);
             stream = Files.newInputStream(Paths.get(actualPath));
           } catch (Exception e) {
-//                        e.printStackTrace();
+//            e.printStackTrace();
           }
         }
 
@@ -52,7 +62,7 @@ public abstract class ClassSearchPath implements Closeable {
 
       @Override
       public void close() throws IOException {
-        // TODO
+        //
       }
     }).toArray((IntFunction<ClassSearchPath[]>) ClassSearchPath[]::new);
   }
