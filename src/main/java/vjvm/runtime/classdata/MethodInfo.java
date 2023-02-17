@@ -38,6 +38,11 @@ public class MethodInfo {
 //    throw new UnimplementedError("TODO: Get method information from constant pool");
   }
 
+  @Override
+  public String toString() {
+    return String.format("%s(0x%x): %s", name, accessFlags, descriptor);
+  }
+
   public boolean public_() {
     return (accessFlags & ACC_PUBLIC) != 0;
   }

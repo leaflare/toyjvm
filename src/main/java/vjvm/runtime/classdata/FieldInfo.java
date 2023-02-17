@@ -40,6 +40,11 @@ public class FieldInfo {
 //    throw new UnimplementedError("TODO: get field info from constant pool");
   }
 
+  @Override
+  public String toString() {
+    return String.format("%s(0x%x): %s", name, accessFlags, descriptor);
+  }
+
   public int attributeCount() {
     return attributes.length;
   }
