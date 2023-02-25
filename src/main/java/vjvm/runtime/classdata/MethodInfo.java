@@ -2,10 +2,11 @@ package vjvm.runtime.classdata;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
+import vjvm.classfiledefs.MethodDescriptors;
 import vjvm.runtime.JClass;
 import vjvm.runtime.classdata.attribute.Attribute;
+import vjvm.runtime.classdata.attribute.Code;
 import vjvm.runtime.classdata.constant.UTF8Constant;
-import vjvm.utils.UnimplementedError;
 
 import java.io.DataInput;
 
@@ -22,8 +23,16 @@ public class MethodInfo {
   @Getter
   private JClass jClass;
 
+  // if this method doesn't hava code attribute
+  // (which is the case of native methods), then code is null.
+  @Getter
+  private Code code;
+
   @SneakyThrows
   public MethodInfo(DataInput dataInput, JClass jClass) {
+
+    this.jClass = jClass;
+
     accessFlags = (short) dataInput.readUnsignedShort();
     int nameIndex = dataInput.readUnsignedShort();
     name = ((UTF8Constant) jClass.constantPool().constant(nameIndex)).value();
@@ -34,8 +43,13 @@ public class MethodInfo {
     attributes = new Attribute[attributesCount];
     for (int i = 0; i < attributes.length; i++) {
       attributes[i] = Attribute.constructFromData(dataInput, jClass.constantPool());
+
+      if (attributes[i] instanceof Code) {
+        code = (Code) attributes[i];
+      }
     }
-//    throw new UnimplementedError("TODO: Get method information from constant pool");
+
+//        throw new UnimplementedError("TODO: Get method information from constant pool");
   }
 
   @Override
@@ -45,6 +59,10 @@ public class MethodInfo {
 
   public boolean public_() {
     return (accessFlags & ACC_PUBLIC) != 0;
+  }
+
+  public int argc() {
+    return MethodDescriptors.argc(descriptor);
   }
 
   public boolean private_() {

@@ -4,7 +4,6 @@ import lombok.var;
 import picocli.CommandLine;
 import vjvm.classfiledefs.Descriptors;
 import vjvm.runtime.JClass;
-import vjvm.utils.UnimplementedError;
 
 import java.util.concurrent.Callable;
 
@@ -40,11 +39,19 @@ class Run implements Callable<Integer> {
   @Parameters(index = "1..*", description = "Arguments passed to java program")
   private String[] args = {};
 
+  @Option(names = {"-d", "--debug"}, description = "Stop at the first instruction and start monitor")
+  boolean debug = false;
+
   @Override
   public Integer call() {
-    throw new UnimplementedError("You will implement this in lab 2");
+    var ctx = new VMContext(parent.userClassPath);
+//    if (debug) {
+//      ctx.interpreter().step(0);
+//    }
+//
+//    ctx.run(entryClass);
+    return 0;
   }
-
 }
 
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
@@ -110,6 +117,8 @@ class Dump implements Callable<Integer> {
     for (int i = 0; i < clazz.methodsCount(); i++) {
       System.out.println(clazz.method(i).toString());
     }
-//    throw new UnimplementedError("TODO: dump clazz in lab 1.2; remove this for 1.1");
+
+//        throw new UnimplementedError("TODO: dump clazz in lab 1.2; remove this for 1.1");
+
   }
 }

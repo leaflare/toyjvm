@@ -9,8 +9,6 @@ import vjvm.runtime.classdata.FieldInfo;
 import vjvm.runtime.classdata.MethodInfo;
 import vjvm.runtime.classdata.attribute.Attribute;
 import vjvm.runtime.classdata.constant.ClassInfoConstant;
-import vjvm.runtime.classdata.constant.UTF8Constant;
-import vjvm.utils.UnimplementedError;
 
 import java.io.DataInput;
 import java.io.InvalidClassException;
@@ -34,13 +32,12 @@ public class JClass {
   private final MethodInfo[] methods;
   private final Attribute[] attributes;
 
+
   @Getter
   private final String thisClass;
 
   @Getter
   private final String superClass;
-
-
 
   @SneakyThrows
   public JClass(DataInput dataInput, JClassLoader classLoader) {
@@ -97,6 +94,14 @@ public class JClass {
 //                + "Some of them are not defined; you need to define them yourself");
   }
 
+  public MethodInfo findMethod(String name, String descriptor) {
+    for (var method : methods)
+      if (method.name().equals(name) && method.descriptor().equals(descriptor))
+        return method;
+
+    return null;
+  }
+
   public boolean public_() {
     return (accessFlags & ACC_PUBLIC) != 0;
   }
@@ -133,20 +138,20 @@ public class JClass {
     return (accessFlags & ACC_MODULE) != 0;
   }
 
-  public int interfacesCount() {
-    return interfaces.length;
-  }
-
-  public String interfaceName (int index) {
-    return ((ClassInfoConstant) constantPool.constant(interfaces[index])).name();
-  }
-
   public int fieldsCount() {
     return fields.length;
   }
 
   public FieldInfo field(int index) {
     return fields[index];
+  }
+
+  public int interfacesCount() {
+    return interfaces.length;
+  }
+
+  public String interfaceName(int index) {
+    return ((ClassInfoConstant) constantPool.constant(interfaces[index])).name();
   }
 
   public int methodsCount() {
@@ -157,4 +162,7 @@ public class JClass {
     return methods[index];
   }
 
+  public String name() {
+    return thisClass;
+  }
 }
