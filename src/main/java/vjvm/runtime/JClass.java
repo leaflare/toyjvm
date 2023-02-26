@@ -50,6 +50,8 @@ public class JClass {
         "Wrong magic number, expected: 0xcafebabe, got: 0x%x", magic));
     }
 
+    // parse data
+    // skip class version check
     minorVersion = dataInput.readUnsignedShort();
     majorVersion = dataInput.readUnsignedShort();
 
