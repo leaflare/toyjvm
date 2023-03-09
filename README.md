@@ -7,7 +7,9 @@
 2. The User Loader, is responsible for searching for the class from the path specified by the user.
 Java uses a policy called parent-first by default: each loader (except the Bootstrap Loader) has a parent, and when searching for a class, it first delegates the search to the parent, and then searches its own load path if it cannot find it.
 
-#### Dump: Print the class file information
+#### Dump: print the class file information
+
+Simplified version of the `javap`
 
 When the dump command is executed, the framework invokes parsing the command line parameters and calling the Dump.call method.
 
@@ -38,7 +40,7 @@ struct ClassFile {
 
 
 
-# Records
+# Code Records
 ## Initialisation
 v1.0.1-v1.0.3 Implemented the ClassSearchPath class. Complemented the constant type.
 ## Lab1
