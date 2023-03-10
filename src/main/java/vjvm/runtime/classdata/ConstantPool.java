@@ -25,6 +25,7 @@ public class ConstantPool {
   @SneakyThrows
   public ConstantPool(DataInput dataInput, JClass jClass) {
     this.jClass = jClass;
+    //Read the length of the constant pool
     var count = dataInput.readUnsignedShort();
     constants = new Constant[count];
     for (int i = 1; i < count; ) {

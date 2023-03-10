@@ -3,6 +3,7 @@ package vjvm.runtime.classdata.attribute;
 import lombok.var;
 import lombok.SneakyThrows;
 import vjvm.runtime.classdata.ConstantPool;
+import vjvm.runtime.classdata.constant.UTF8Constant;
 
 import java.io.DataInput;
 
@@ -13,6 +14,11 @@ public abstract class Attribute {
     var nameIndex = input.readUnsignedShort();
     var attrLength = Integer.toUnsignedLong(input.readInt());
 
-    return new UnknownAttribute(input, attrLength);
+    switch (((UTF8Constant) constantPool.constant(nameIndex)).value()) {
+      case "Code":
+        return new Code(input, constantPool);
+      default:
+        return new UnknownAttribute(input, attrLength);
+    }
   }
 }
