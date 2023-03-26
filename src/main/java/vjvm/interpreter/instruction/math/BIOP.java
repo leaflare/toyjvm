@@ -5,17 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.var;
 import vjvm.interpreter.instruction.Instruction;
 import vjvm.runtime.JThread;
-import vjvm.runtime.classdata.MethodInfo;
 import vjvm.runtime.frame.OperandStack;
-import vjvm.runtime.frame.ProgramCounter;
+import vjvm.runtime.ProgramCounter;
+import vjvm.runtime.class_.MethodInfo;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-
 public class BIOP<T> extends Instruction {
+    /**
+     * 二元运算
+     */
 
     private final Function<OperandStack, T> popFunc;
     private final BiFunction<T, T, T> calcFunc;
