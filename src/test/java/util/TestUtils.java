@@ -1,4 +1,4 @@
-package lab3;
+package util;
 
 import lombok.SneakyThrows;
 import lombok.var;
