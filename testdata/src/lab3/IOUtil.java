@@ -1,4 +1,4 @@
-package lab2;
+package lab3;
 
 public class IOUtil {
   public static native int readInt();
