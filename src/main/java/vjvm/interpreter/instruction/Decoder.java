@@ -30,7 +30,10 @@ import vjvm.runtime.class_.MethodInfo;
 import vjvm.error.UnimplementedInstructionError;
 
 import java.util.function.BiFunction;
-
+/**
+Receive a ProgramCounter and a MethodInfo as arguments, and returns an instance of the Instruction class.
+The method uses a static array decodeTable to look up the appropriate BiFunction instance to decode the current opcode.
+*/
 public class Decoder {
 
     public static Instruction decode(ProgramCounter pc, MethodInfo method) {
