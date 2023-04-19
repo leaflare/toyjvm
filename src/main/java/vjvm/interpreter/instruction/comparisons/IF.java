@@ -5,12 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.var;
 import vjvm.interpreter.instruction.Instruction;
 import vjvm.runtime.JThread;
-import vjvm.runtime.classdata.MethodInfo;
-import vjvm.runtime.frame.ProgramCounter;
-
-enum Condition {
-    EQ, NE, LT, GE, GT, LE
-}
+import vjvm.runtime.ProgramCounter;
+import vjvm.runtime.class_.MethodInfo;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 

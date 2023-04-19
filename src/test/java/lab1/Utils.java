@@ -39,8 +39,8 @@ public class Utils {
             expectedLine = readNonBlankLine(expectedReader);
             actualLine = readNonBlankLine(actualReader);
 
-            System.err.println("Expected : " + expectedLine);
-            System.err.println("Actual   : " + actualLine);
+            System.err.println("TESTING Expected : " + expectedLine);
+            System.err.println("TESTING Actual   : " + actualLine);
 
             assertTrue(expectedLine != null || actualLine == null, "Excessive output");
             assertTrue(expectedLine == null || actualLine != null, "Missing output");
@@ -64,7 +64,7 @@ public class Utils {
             args.add(path);
         }
 
-        args.add("dump");
+        args.add("--debug-dump");
         args.add(clazz);
         return cmd.execute(args.toArray(new String[0]));
     }

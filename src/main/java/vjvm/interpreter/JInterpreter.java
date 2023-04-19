@@ -1,20 +1,17 @@
 package vjvm.interpreter;
 
-import lombok.Getter;
 import lombok.var;
 import org.apache.commons.lang3.tuple.Triple;
 import vjvm.classfiledefs.MethodDescriptors;
 import vjvm.interpreter.instruction.Decoder;
-import vjvm.runtime.JThread;
-import vjvm.runtime.classdata.MethodInfo;
 import vjvm.runtime.frame.JFrame;
+import vjvm.runtime.JThread;
 import vjvm.runtime.frame.Slots;
-import vjvm.utils.InputUtils;
+import vjvm.runtime.class_.MethodInfo;
+import vjvm.util.InputUtils;
+import vjvm.util.Logger;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.function.BiFunction;
 
 import static vjvm.classfiledefs.Descriptors.*;
@@ -22,12 +19,6 @@ import static vjvm.classfiledefs.Descriptors.*;
 public class JInterpreter {
     // (ClassName, MethodName, MethodDescriptor) -> HackFunction
     private static final HashMap<Triple<String, String, String>, BiFunction<JThread, Slots, Object>> nativeTable = new HashMap<>();
-
-    @Getter
-    private Status status = Status.CONTINUE;
-    private long steps;
-
-    private final ArrayList<Breakpoint> breakpoints = new ArrayList<>();
 
     /**
      * Invoke a method when there is no frames in a thread.
@@ -47,52 +38,19 @@ public class JInterpreter {
         }
     }
 
-    public void step(long steps) {
-        assert steps >= 0;
-
-        status = Status.STEP;
-        this.steps = steps;
-    }
-
-    public void continue_() {
-        status = Status.CONTINUE;
-    }
-
-    public void break_() {
-        status = Status.BREAK;
-    }
-
-    public void setBreakpoint(MethodInfo method, int offset) {
-        // TODO(optional): add and enable a breakpoint
-    }
-
-    public void removeBreakpoint(int index) {
-        // TODO(optional): disable and remove the breakpoint at breakpoints[index]
-    }
-
-    public List<Breakpoint> breakpoints() {
-        return Collections.unmodifiableList(breakpoints);
-    }
 
     private void run(JThread thread) {
         var frame = thread.top();
-        var monitor = thread.context().monitor();
 
         while (thread.top() == frame) {
-            if (status == Status.STEP && steps == 0) {
-                monitor.enter(thread);
-            }
 
-            System.err.println("PC: " + frame.pc().position());
+            Logger.trace("PC: " + frame.pc().position());
 
             var op = Decoder.decode(thread.pc(), frame.method());
 
-            System.err.println("Instruction: " + op.toString());
+            Logger.trace("Instruction: " + op.toString());
 
-            steps--;
             op.run(thread);
-
-            // TODO(optional): handle breakpoints
         }
     }
 
@@ -143,38 +101,42 @@ public class JInterpreter {
         }
     }
 
-    public static enum Status {
-        CONTINUE, STEP, BREAK,
-    }
 
     static {
         nativeTable.put(Triple.of("lab2/IOUtil", "readInt", "()I"), (t, a) -> InputUtils.readInt());
         nativeTable.put(Triple.of("lab2/IOUtil", "readLong", "()J"), (t, a) -> InputUtils.readLong());
         nativeTable.put(Triple.of("lab2/IOUtil", "readChar", "()C"), (t, a) -> InputUtils.readChar());
         nativeTable.put(Triple.of("lab2/IOUtil", "writeInt", "(I)V"), (t, a) -> {
-            System.err.println("IOUtil: int " + a.int_(0));
-            System.out.println(a.int_(0));
+            Logger.println(a.int_(0));
             return null;
         });
         nativeTable.put(Triple.of("lab2/IOUtil", "writeFloat", "(F)V"), (t, a) -> {
-            System.err.println("IOUtil: float " + a.float_(0));
-            System.out.println(a.float_(0));
+            Logger.println(a.float_(0));
             return null;
         });
         nativeTable.put(Triple.of("lab2/IOUtil", "writeLong", "(J)V"), (t, a) -> {
-            System.err.println("IOUtil: long " + a.long_(0));
-            System.out.println(a.long_(0));
+            Logger.println(a.long_(0));
             return null;
         });
         nativeTable.put(Triple.of("lab2/IOUtil", "writeDouble", "(D)V"), (t, a) -> {
-            System.err.println("IOUtil: double " + a.double_(0));
-            System.out.println(a.double_(0));
+            Logger.println(a.double_(0));
             return null;
         });
         nativeTable.put(Triple.of("lab2/IOUtil", "writeChar", "(C)V"), (t, a) -> {
-            System.err.println("IOUtil: char " + a.char_(0));
-            System.out.println(a.char_(0));
+            Logger.println(a.char_(0));
             return null;
         });
+
+        nativeTable.put(Triple.of("java/lang/Object", "registerNatives", "()V"), (t, a) -> {
+            // TODO: ignore
+            return null;
+        });
+
+        nativeTable.put(Triple.of("java/lang/System", "registerNatives", "()V"), (t, a) -> {
+            // TODO: ignore
+            return null;
+        });
+
+
     }
 }

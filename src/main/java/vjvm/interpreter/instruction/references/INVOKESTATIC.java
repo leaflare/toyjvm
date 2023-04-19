@@ -2,20 +2,17 @@ package vjvm.interpreter.instruction.references;
 
 import lombok.var;
 import vjvm.interpreter.instruction.Instruction;
-import vjvm.runtime.JClass;
 import vjvm.runtime.JThread;
-import vjvm.runtime.classdata.MethodInfo;
-import vjvm.runtime.classdata.constant.MethodRefConstant;
-import vjvm.runtime.frame.ProgramCounter;
+import vjvm.runtime.ProgramCounter;
+import vjvm.runtime.class_.MethodInfo;
+import vjvm.runtime.class_.constant.MethodRefConstant;
 
 public class INVOKESTATIC extends Instruction {
     private final MethodInfo method;
 
     public INVOKESTATIC(ProgramCounter pc, MethodInfo method) {
         MethodRefConstant methodRef = (MethodRefConstant) method.jClass().constantPool().constant(pc.ushort());
-
-        JClass clazz = method.jClass().classLoader().loadClass("L" + methodRef.classInfo().name() + ";");
-        this.method = clazz.findMethod(methodRef.nameAndType().name(), methodRef.nameAndType().type());
+        this.method = methodRef.getMethod();
     }
 
     @Override
@@ -23,6 +20,7 @@ public class INVOKESTATIC extends Instruction {
         var stack = thread.top().stack();
         var args = stack.popSlots(method.argc());
 
+        method.jClass().init(thread);
         thread.context().interpreter().invoke(method, thread, args);
     }
 

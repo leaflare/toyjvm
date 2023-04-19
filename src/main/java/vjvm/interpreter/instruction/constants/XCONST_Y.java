@@ -5,9 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.var;
 import vjvm.interpreter.instruction.Instruction;
 import vjvm.runtime.JThread;
-import vjvm.runtime.classdata.MethodInfo;
 import vjvm.runtime.frame.OperandStack;
-import vjvm.runtime.frame.ProgramCounter;
+import vjvm.runtime.ProgramCounter;
+import vjvm.runtime.class_.MethodInfo;
+import vjvm.runtime.reference.Reference;
 
 import java.util.function.BiConsumer;
 
@@ -16,6 +17,10 @@ public class XCONST_Y<T> extends Instruction {
     private final T value;
     private final BiConsumer<OperandStack, T> pushFunc;
     private String name;
+
+    public static final XCONST_Y<Reference> ACONST_NULL(ProgramCounter pc, MethodInfo method) {
+        return new XCONST_Y<>(Reference.NULL, OperandStack::pushReference, "aconst_null");
+    }
 
     public static final XCONST_Y<Integer> ICONST_M1(ProgramCounter pc, MethodInfo method) {
         return new XCONST_Y<>(-1, OperandStack::pushInt, "iconst_m1");

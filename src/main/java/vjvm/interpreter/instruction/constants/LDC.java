@@ -5,13 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.var;
 import vjvm.interpreter.instruction.Instruction;
 import vjvm.runtime.JThread;
-import vjvm.runtime.classdata.MethodInfo;
-import vjvm.runtime.classdata.constant.DoubleConstant;
-import vjvm.runtime.classdata.constant.FloatConstant;
-import vjvm.runtime.classdata.constant.IntegerConstant;
-import vjvm.runtime.classdata.constant.LongConstant;
-import vjvm.runtime.frame.ProgramCounter;
-import vjvm.utils.UnimplementedError;
+import vjvm.runtime.class_.constant.*;
+import vjvm.runtime.ProgramCounter;
+import vjvm.runtime.class_.MethodInfo;
+import vjvm.error.UnimplementedError;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class LDC extends Instruction {
@@ -50,6 +47,10 @@ public class LDC extends Instruction {
                 opStack.pushFloat(((FloatConstant) constant).value());
             } else if (constant instanceof IntegerConstant) {
                 opStack.pushInt(((IntegerConstant) constant).value());
+            } else if (constant instanceof StringConstant) {
+                var strClass = thread.top().jClass().classLoader().loadClass("Ljava/lang/String;");
+//                strClass.init(thread);
+                opStack.pushReference(thread.context().heap().alloc(strClass));
             } else {
                 throw new UnimplementedError();
             }
