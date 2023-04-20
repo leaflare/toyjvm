@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.var;
 import vjvm.interpreter.instruction.Instruction;
 import vjvm.runtime.JThread;
-import vjvm.runtime.class_.MethodInfo;
 import vjvm.runtime.ProgramCounter;
+import vjvm.runtime.class_.MethodInfo;
 import vjvm.runtime.reference.Reference;
 import vjvm.util.Logger;
 
@@ -36,10 +36,10 @@ public class IF_ACMP extends Instruction {
 
         switch (condition) {
             case EQ:
-                success = value1.innerIndex() == value2.innerIndex();
+                success = value1.equals(value2);
                 break;
             case NE:
-                success = value1.innerIndex() != value2.innerIndex();
+                success = !(value1.equals(value2));
                 break;
             default:
                 assert false;

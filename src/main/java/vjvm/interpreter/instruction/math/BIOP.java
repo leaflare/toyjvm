@@ -16,7 +16,7 @@ import java.util.function.Function;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BIOP<T> extends Instruction {
     /**
-     * 二元运算
+     * Binary operations
      */
 
     private final Function<OperandStack, T> popFunc;

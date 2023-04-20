@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.var;
 import vjvm.interpreter.instruction.Instruction;
 import vjvm.runtime.JThread;
+import vjvm.runtime.ProgramCounter;
 import vjvm.runtime.class_.MethodInfo;
 import vjvm.runtime.frame.OperandStack;
-import vjvm.runtime.ProgramCounter;
 import vjvm.runtime.reference.Reference;
 
 import java.util.function.BiConsumer;
@@ -124,7 +124,7 @@ public class XLOAD_Y<T> extends Instruction {
         var stack = thread.top().stack();
         var localVars = thread.top().vars();
 
-        T value = (T) localVars.value(index).get();
+        T value = (T) localVars.value(index);
         pushFunc.accept(stack, value);
     }
 

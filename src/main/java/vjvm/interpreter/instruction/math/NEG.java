@@ -17,7 +17,7 @@ import java.util.function.Function;
 public class NEG<T extends Number> extends Instruction {
 
     /**
-     * NEG 指令
+     * NEG Instruction
      */
 
     private final Function<OperandStack, T> popFunc;
