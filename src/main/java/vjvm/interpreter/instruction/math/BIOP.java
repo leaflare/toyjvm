@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.var;
 import vjvm.interpreter.instruction.Instruction;
 import vjvm.runtime.JThread;
+import vjvm.runtime.exception.JThrowable;
 import vjvm.runtime.frame.OperandStack;
 import vjvm.runtime.ProgramCounter;
 import vjvm.runtime.class_.MethodInfo;
@@ -128,15 +129,23 @@ public class BIOP<T> extends Instruction {
         return new BIOP<>(OperandStack::popDouble, (s1, s2) -> s1 % s2, OperandStack::pushDouble, "drem");
     }
 
-    @Override
-    public void run(JThread thread) {
-        var stack = thread.top().stack();
-        T value2 = popFunc.apply(stack);
-        T value1 = popFunc.apply(stack);
+  @Override
+  public void run(JThread thread) {
+    var stack = thread.top().stack();
+    T value2 = popFunc.apply(stack);
+    T value1 = popFunc.apply(stack);
 
-        T result = calcFunc.apply(value1, value2);
-        pushFunc.accept(stack, result);
+    T result;
+
+    try {
+      result = calcFunc.apply(value1, value2);
+    } catch (ArithmeticException e) {
+      var exception = thread.context().heap().objAlloc(thread.context().bootstrapLoader().loadClass("Ljava/lang/ArithmeticException;"));
+      throw new JThrowable(exception);
     }
+
+    pushFunc.accept(stack, result);
+  }
 
     @Override
     public String toString() {
