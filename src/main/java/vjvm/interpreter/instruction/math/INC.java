@@ -12,7 +12,7 @@ import vjvm.runtime.class_.MethodInfo;
 
 public class INC extends Instruction {
     /**
-     * INC 指令
+     * INC Instruction
      */
 
     private final ProgramCounter pc;
